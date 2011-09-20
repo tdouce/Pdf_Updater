@@ -1,5 +1,5 @@
 """
-script for friend to take each page from a large pdf
+script for a local organization to take each page from a large pdf
 and save it as a seperate pdf with a file name as account number.
 
 http://pybrary.net/pyPdf/
