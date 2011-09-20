@@ -16,7 +16,7 @@ pdfPath = r'C:\Path\to\sample.pdf'
 save_to_path = r"C:\some\directory"
 
 
-def update_pdf():
+def update_pdf( pdfPath, save_to_path ):
 
     # List to keep track of how many times each account number occured.
     # We will use this to name the files appropriately
@@ -120,4 +120,4 @@ def update_pdf():
             
 
 
-updatepdf()
+updatepdf( pdfPath, save_to_path )
