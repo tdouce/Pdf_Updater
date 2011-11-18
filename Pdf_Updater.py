@@ -1,26 +1,28 @@
 """
-script for a local organization to take each page from a large pdf
+script for friend to take each page from a large pdf
 and save it as a seperate pdf with a file name as account number.
 
 http://pybrary.net/pyPdf/
 """
 
-import os, re
+import os, re, pdb
 from pyPdf import PdfFileWriter, PdfFileReader
 
 
 # path to the file you want to dice apart
-pdfPath = r'C:\Path\to\sample.pdf'
+pdfPath = r'C:\UserFiles\Travis\Lawton\ACCTSTAT_1.pdf'
 
 # path to the directory you want to save the files to.
-save_to_path = r"C:\some\directory"
+save_to_path = r"C:\UserFiles\Travis\Lawton\ACCTSTAT_1"
 
 
-def update_pdf( pdfPath, save_to_path ):
+def update_pdf():
 
     # List to keep track of how many times each account number occured.
     # We will use this to name the files appropriately
     accnt_number_files = []
+
+    accnt_page_tracker = {}
 
     page_numbers_not_extracted = []
     
@@ -51,52 +53,65 @@ def update_pdf( pdfPath, save_to_path ):
         # number of characters an account number has
         length = len(str(accnt_number.group()))
         
-        
         # If account number found and exactly 15 characters are in the account number
         if accnt_number and length == 15:
 
             # Replace some extraneious data
-            accnt_number = accnt_number.group().replace(u"\xa0","")
+            accnt_number = str( accnt_number.group().replace(u"\xa0","") )
             
-            print 'Found account number: ', accnt_number
+            # if accnt number has already been encountered
+            if accnt_page_tracker.has_key( accnt_number ):
 
-            #accnt_number_files.append( accnt_number )
+                # Add the page object to the list, with is the dictionary value for the account
+                # number (the dictionary key)
+                accnt_page_tracker[ accnt_number ] =  accnt_page_tracker[ accnt_number ] + [ page1 ]  
 
-            # instantiate the writer object
-            output = PdfFileWriter()
-        
-            # Add page to as is
-            output.addPage( input1.getPage( page ))
-
-            if accnt_number in accnt_number_files:
-
-                # create the path to where you want to save the pdf to, file by account number plush number of times accnt number appeared
-                save_file = os.path.join( save_to_path, "%s_%s.pdf" % ( accnt_number, accnt_number_files.count(accnt_number)+1 ) )
-
+            # if the account number has NOT been encountered
             else:
 
-                # create the path to where you want to save the pdf to, file by account number
-                save_file = os.path.join( save_to_path, "%s.pdf" % accnt_number)
+                # Add it to the dictionary in a list
+                accnt_page_tracker[ accnt_number ] =  [ page1 ]
 
-            # Add the the account number to the list
+            # append accnt number to the list
             accnt_number_files.append( accnt_number )
-
-            print 'Saving page to file: ', save_file
-
-            # output stream
-            outputStream = file( save_file , "wb")
-
-            # write stream to file
-            output.write( outputStream )
-
-            # close file
-            outputStream.close()
-
+   
         # if account number is not found
         else:
             
             print 'can not find account number'
             page_numbers_not_extracted.append( page )
+
+    print
+    print '*'*20
+    print
+    
+
+    # Iterate over each account number in the dictionary
+    for accnt_number in accnt_page_tracker.iteritems():
+
+        # Instantiate object
+        pdf = PdfFileWriter()
+
+        # for each page object. This will get every page associated with the account number
+        for page in accnt_number[1]:
+
+            # Add to object
+            pdf.addPage( page )
+
+        # Create the pdf file
+        save_file = os.path.join( save_to_path, "%s.pdf" % ( accnt_number[0] ) ) 
+        
+        # output the stream
+        outputStream = file( save_file , "wb")
+
+        # write stream to file
+        pdf.write( outputStream )
+
+        # close file
+        outputStream.close()
+
+
+        
 
 
     print '\n'*2
@@ -112,12 +127,11 @@ def update_pdf( pdfPath, save_to_path ):
     if len( page_numbers_not_extracted) == 0:
         
         print len( accnt_number_files ), 'of', number_of_pages, 'successfully written'
-        print 'All pages successfully converted to files!'
+        print 'All pages successfully extracted and saved to pdf!'
         print '\n'
 
 
+update_pdf()
 
-            
 
 
-updatepdf( pdfPath, save_to_path )
