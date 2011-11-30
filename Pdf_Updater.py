@@ -1,5 +1,5 @@
 """
-script for friend to take each page from a large pdf
+script for organization to take each page from a large pdf
 and save it as a seperate pdf with a file name as account number.
 
 http://pybrary.net/pyPdf/
@@ -10,10 +10,10 @@ from pyPdf import PdfFileWriter, PdfFileReader
 
 
 # path to the file you want to dice apart
-pdfPath = r'C:\UserFiles\Travis\Lawton\ACCTSTAT_1.pdf'
+pdfPath = r'C:\Path\To\Pdf\mypdf.pdf'
 
 # path to the directory you want to save the files to.
-save_to_path = r"C:\UserFiles\Travis\Lawton\ACCTSTAT_1"
+save_to_path = r"C:\Path\To\Save\Pdfs"
 
 
 def update_pdf():
